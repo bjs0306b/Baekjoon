@@ -4,23 +4,30 @@
 #include <memory.h>
 #include <vector>
 using namespace std;
+long long n, dis[100001],sum=0;
+vector<pair<int,int>> cost;
+bool cmp(pair<int,int> a, pair<int,int> b)
+{
+    if(a.first == b.first) return a.second < b.second;
+    return a.first < b.first;
+}
 
 int main(){
     ios_base::sync_with_stdio(0);cin.tie(0);
-    int n, dis[1001], cost[1001], dp[1001]; dp[1] = 0;
     cin >> n;
-    for(int i=1;i<n;i++) cin >> dis[i];
-    for(int i=1;i<=n;i++) cin >> cost[i];
-    for(int i=2;i<=n;i++){
-        dp[i] = dp[i-1] + cost[1]*dis[i-1];
-    }
-    for(int j=2;j<n;j++){
-        for(int i=j+1;i<=n;i++){
-            dp[i] = min(dp[i], dp[i-1] + cost[j]*dis[i-1]);
+    dis[0] = 0;
+    for(int i=1;i<n;i++) {int num; cin >> num; dis[i] = dis[i-1]+num;}
+    long long dissum = dis[n-1];
+    for(int i=1;i<=n;i++) {int num; cin >> num; cost.push_back({num,i});}
+    sort(cost.begin(), cost.end(), cmp);
+    for(pair<int,int> a : cost){
+        if(dissum  > dis[a.second-1]){
+            sum += a.first * (dissum-dis[a.second-1]);
+            dissum  = dis[a.second-1];
         }
+        if(dissum == 0) break;
     }
-    cout << dp[n];
-    
+    cout << sum;
     
     return 0;
 }
