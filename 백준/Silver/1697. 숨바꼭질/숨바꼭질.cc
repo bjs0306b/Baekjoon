@@ -1,46 +1,57 @@
 #include <iostream>
-#include <algorithm>
-#include <string>
-#include <vector>
-#include <deque>
-#include <set>
+#include <queue>
+
 using namespace std;
 
-int main(){
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    int a, b, cnt = 0; 
-    cin >> a >> b;
-    
-    deque<int> deq;
-    set<int> visited;
-    
-    deq.push_back(a);
-    visited.insert(a);
-    
-    while(!visited.count(b)){
-        deque<int> deq2 = deq;
-        deq.clear(); // Clearing deque for next level
-        
-        while(!deq2.empty()){
-            int num = deq2.front();
-            deq2.pop_front();
-            if(num > 0 && !visited.count(num - 1)){
-                deq.push_back(num - 1);
-                visited.insert(num - 1);
+int main()
+{
+
+    int me, you;
+    cin >> me >> you;
+    queue<int> que;
+    que.push(me);
+
+    int time = 0;
+    bool visited[100001] = {0};
+    bool isFind = false;
+    while (1)
+    {
+        int size = que.size();
+
+        for (int i = 0; i < size; i++)
+        {
+            me = que.front();
+            que.pop();
+
+            if (me == you)
+            {
+                isFind = true;
+                break;
             }
-            if(num < 100000 && !visited.count(num + 1)){
-                deq.push_back(num + 1);
-                visited.insert(num + 1);
+
+            if (me > 0 && !visited[me - 1])
+            {
+                visited[me - 1] = true;
+                que.push(me - 1);
             }
-            if(num < 50001 && !visited.count(num * 2)){
-                deq.push_back(num * 2);
-                visited.insert(num * 2);
+            if (me < 100000 && !visited[me + 1])
+            {
+                visited[me + 1] = true;
+                que.push(me + 1);
+            }
+
+            if (me * 2 <= 100000 && !visited[me * 2])
+            {
+                visited[me * 2] = true;
+                que.push(me * 2);
             }
         }
-        cnt++;
+        if (isFind)
+        {
+            break;
+        }
+        time++;
     }
-    
-    cout << cnt;
-    
+    cout << time;
     return 0;
 }
