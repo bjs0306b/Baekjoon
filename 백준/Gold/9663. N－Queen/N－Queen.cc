@@ -1,70 +1,35 @@
 #include <iostream>
-#include <algorithm>
-#include <string>
-#include <memory.h>
-#include <vector>
-#include <cmath>
+#define MAX 15
 using namespace std;
 
-int arr[15][15], n, cnt = 0;
-bool visited[15];
-void func(int a, int b, int c)
+int col[MAX];
+int N, total = 0;
+
+bool check(int level)
 {
-    for (int i = a, j = b; i >= 0 && i < n && j >= 0 && j < n; i++, j--)
-    {
-        if(!arr[i][j]) arr[i][j] = c;
-    }
-    for (int i = a, j = b; i >= 0 && i < n && j >= 0 && j < n; i++, j++)
-    {
-        if(!arr[i][j])arr[i][j] = c;
-    }
+    for(int i = 0; i < level; i++)
+        if(col[i] == col[level] || abs(col[level] - col[i]) == level - i)// 대각선이거나 같은 라인
+            return false;
+        //col[i]가 의미하는 것이 X좌표, i가 의미하는것이 Y좌표이므로 차이가 일정하다면 대각선에 있다고 볼 수 있다.
+    return true;
 }
 
-void del(int a, int b, int c)
+void nqueen(int x)
 {
-    for (int i = a, j = b; i >= 0 && i < n && j >= 0 && j < n; i++, j--)
-    {
-        if(arr[i][j] == c) arr[i][j] = 0;
-    }
-    for (int i = a, j = b; i >= 0 && i < n && j >= 0 && j < n; i++, j++)
-    {
-        if(arr[i][j] == c) arr[i][j] = 0;
-    }
-}
-void dfs(int a, int b)
-{
-    if (a == n - 1)
-    {
-        cnt++;
-    }
+    if(x == N)
+        total++;
     else
     {
-        for (int i = 0; i < n; i++)
+        for(int i = 0; i < N; i++)
         {
-            if(!visited[i]){
-                visited[i]= true;
-                func(a, b, a+1);
-                if(!arr[a + 1][i]) dfs(a + 1, i);
-                del(a,b, a+1);
-                visited[i] = false;
-            }
+            col[x] = i; // 해당 위치에 퀸을 배치
+            if(check(x)) // 유효하다면 다음행의 퀸 배치, 유효하지않다면 다른 위치로 퀸 배치 변경
+                nqueen(x+1);
         }
     }
 }
-int main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-
-    cin >> n;
-    for (int i = 0; i < n; i++)
-    {
-        memset(arr, 0, 4 * 15 * 15);
-        memset(visited, false, 15);
-        visited[i] = true;
-        dfs(0, i);
-    }
-    cout << cnt;
-
-    return 0;
+int main() {
+    cin >> N;
+    nqueen(0);
+    cout << total;
 }
