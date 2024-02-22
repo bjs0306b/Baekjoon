@@ -1,71 +1,55 @@
 #include <iostream>
-#include <algorithm>
-#include <string>
-#include <memory.h>
-#include <vector>
-#include <cmath>
+
 using namespace std;
 
-int n, arr[1000][1000], white=0,blue=0;
+int n;
+int paper[128][128];
+int blue, white;
 
-void dfs(int a, int b, int s)
+void solve(int y, int x, int size)
 {
-    bool check = true;
-    int temp = arr[a][b];
-
-    
-    for (int i = a - a % s; i < a - a % s + s; i++)
+    int check = paper[y][x];
+    for (int i = y; i < y + size; i++)
     {
-        for (int j = b - b % s; j < b - b % s + s; j++)
+        for (int j = x; j < x + size; j++)
         {
-            if (arr[i][j] != temp)
+
+            if (check == 0 && paper[i][j] == 1)
             {
-                check = false;
-                break;
+                check = 2;
+            }
+            else if (check == 1 && paper[i][j] == 0)
+            {
+                check = 2;
+            }
+            if (check == 2)
+            {
+                solve(y, x, size / 2);
+                solve(y, x + size / 2, size / 2);
+                solve(y + size / 2, x, size / 2);
+                solve(y + size / 2, x + size / 2, size / 2);
+                return;
             }
         }
-        if(!check) break;
     }
-    if (check)
-    {
-        dfs(a, b, 2 * s);
-    }
+    if (check == 0)
+        white++;
     else
-    {
-        if(temp) blue++;
-        else white++;
-
-        s/=2;
-        for (int i = a - a % s; i < a - a % s + s; i++)
-        {
-            for (int j = b - b % s; j < b - b % s + s; j++)
-            {
-                arr[i][j] = -1;
-            }
-        }
-    }
+        blue++;
 }
 int main()
 {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cin >> n;
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
-            int num; cin >> num; arr[i][j] = num;
-        }
-    }     
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
 
+    cin >> n;
     for (int i = 0; i < n; i++)
-    {
         for (int j = 0; j < n; j++)
-        {
-            if (arr[i][j] != -1)
-            {
-                dfs(i, j, 1);
-            }
-        }
-    }
-    cout << white << "\n" << blue;
+            cin >> paper[i][j];
+
+    solve(0, 0, n);
+    cout << white << '\n';
+    cout << blue << '\n';
     return 0;
 }
