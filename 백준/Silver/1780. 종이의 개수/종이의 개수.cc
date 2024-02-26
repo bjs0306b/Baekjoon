@@ -24,24 +24,7 @@ void dfs(int a, int b, int s)
     }
     if (check)
     {
-        if (s == 2178)
-        {
-            if (arr[a][b] == -1)
-                ans[0]=1;
-            else if (arr[a][b] == 0)
-                ans[1]=1;
-            else if (arr[a][b] == 1)
-                ans[2]=1;
-            for (int i = (a / s) * s; i < (a / s) * s + s; i++)
-            {
-                for (int j = (b / s) * s; j < (b / s) * s + s; j++)
-                {
-                    arr[i][j] = 2;
-                }
-            }
-        }
-        else
-            dfs(a, b, 3 * s);
+        dfs(a, b, 3 * s);
     }
     else
     {
