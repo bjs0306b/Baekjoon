@@ -6,7 +6,7 @@
 #include <set>
 #include <cmath>
 using namespace std;
-int arr[3000][3000];
+int arr[2187][2187];
 int ans[3];
 void dfs(int a, int b, int s)
 {
