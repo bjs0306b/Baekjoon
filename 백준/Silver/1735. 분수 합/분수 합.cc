@@ -1,20 +1,28 @@
 #include <iostream>
-#include <algorithm>
-#include <string>
-#include <memory.h>
-#include <vector>
-#include <set>
-#include <cmath>
 using namespace std;
-
-int main(){
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    int a,b,c,d; cin >>a>>b>>c>>d;
-    int m = a*d+b*c, n = b*d;
-    for(int i = min(m,n); i > 1; i--){
-        if(m%i==0 && n%i==0){m/=i; n/=i; break;}
+ 
+int gcd(int x, int y){
+    int z = 1;
+    while(y != 0){
+        z = x % y;
+        x = y;
+        y = z;
     }
-    cout << m << " " << n;
+    return x;
+}
+ 
+int main(int argc, const char * argv[]) {
+    int a, b, c, d;//입력
+    int e, f;//출력
     
+    cin >> a >> b >> c >> d;
+    
+    e = a * d + c * b;
+    f = b * d;
+    
+    int min = gcd(e, f);
+    e /= min;
+    f /= min;
+    cout << e << ' ' << f << '\n';;
     return 0;
 }
