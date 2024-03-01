@@ -7,40 +7,20 @@
 #include <cmath>
 using namespace std;
 
-set<int> s;
+int arr[500];
 
-void func(int a, int b, int c){
-    s.insert(a);
-    s.insert(b);
-    s.insert(c);
-    s.insert(a+b);
-    s.insert(a+c);
-    s.insert(b+c);
-    s.insert(a+b+c);
-}
 int main(){
     ios_base::sync_with_stdio(0);cin.tie(0);
     int a,b,c,n; cin >> a >> b >> c >> n;
-    vector<int> va,vb,vc;
-    for(int i=1;i<=ceil(n/a);i++){
-        va.push_back(i*a);
-    }
-    for(int i=1;i<=ceil(n/b);i++){
-        vb.push_back(i*b);
-    }
-    for(int i=1;i<=ceil(n/c);i++){
-        vc.push_back(i*c);
-    }
-    
-    for(auto aa : va){
-        for(auto bb : vb){
-            for(auto cc : vc){
-                func(aa,bb,cc);
-            }
+    arr[a] = 1, arr[b] =1, arr[c] = 1;
+    for(int i=1;i<301;i++){
+        if(arr[i]){
+            arr[i+a] = 1;
+            arr[i+b] = 1;
+            arr[i+c] = 1;
         }
     }
-
-    if(s.find(n) != s.end()) cout << 1;
+    if(arr[n]) cout << 1;
     else cout << 0;
     return 0;
 }
