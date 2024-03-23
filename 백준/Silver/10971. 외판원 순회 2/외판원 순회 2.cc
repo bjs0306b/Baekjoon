@@ -18,7 +18,7 @@ void dfs(int s, int e, int ss, int cnt, int sum){
         for(int i=0;i<n;i++){
             if(!visited[i] && arr[e][i]){
                 visited[i] = true;
-                dfs(e, i, ss, cnt+1, sum+arr[e][i]);
+                if(sum+arr[e][i] < mn_dis) dfs(e, i, ss, cnt+1, sum+arr[e][i]);
                 visited[i] = false;
             }
         }
