@@ -11,10 +11,9 @@ using namespace std;
 int main(){
     ios_base::sync_with_stdio(0);cin.tie(0);
     int n; 
-    int cnt = 0;
     while(cin >> n){    
         int one = 1;
-        cnt = 1;
+        int cnt = 1;
         for(;;){
             if(one % n == 0){
                 break;
