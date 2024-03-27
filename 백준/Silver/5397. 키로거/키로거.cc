@@ -17,36 +17,27 @@ int main(){
     while(n--){
         list<char> l;
         string s; cin >> s;
-        bool check = true;
-        list<char>::iterator iter;
+        list<char>::iterator iter = l.end();
         for(auto k : s){
-            if(check){
-                if(k != '<' && k != '>' && k != '-'){
-                    l.push_back(k);
-                    check = false;
-                    iter = l.end();
+            if(k == '<'){
+                if(iter != l.begin())
+                    iter--;
+            }
+            else if(k == '>'){
+                if(iter != l.end())
+                    iter++; 
+            }
+            else if(k == '-'){
+                if(iter != l.begin()){
+                    auto temp = iter;
+                    l.erase(--temp);
                 }
             }
             else{
-                if(k == '<'){
-                    if(iter != l.begin())
-                        iter--;
-                }
-                else if(k == '>'){
-                    if(iter != l.end())
-                        iter++; 
-                }
-                else if(k == '-'){
-                    if(iter != l.begin()){
-                        auto temp = iter;
-                        l.erase(--temp);
-                    }
-                }
-                else{
-                    l.insert(iter,k);
-                }
+                l.insert(iter,k);
             }
         }
+        
         for(auto k : l) cout << k;
         cout << "\n";
     }
