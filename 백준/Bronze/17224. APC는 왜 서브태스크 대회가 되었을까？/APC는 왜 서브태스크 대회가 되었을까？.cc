@@ -27,20 +27,20 @@ int main(){
     sort(hard.begin(), hard.end(), greater<int>());
     
     for(int i=0;i<a;i++){
+        if(c == 0) break;
         if(!visited[i] && hard[i] <= b){
             visited[i] = true;
             ans += 140;
             c--;
         }   
-        if(c == 0) break;
     }
     for(int i=0;i<a;i++){
+        if(c == 0) break;
         if(!visited[i] && easy[i] <= b){
             visited[i] = true;
             ans += 100;
             c--;
         }
-        if(c == 0) break;
     }
     cout << ans;
     
