@@ -1,107 +1,45 @@
-#include <iostream>
-#include <string>
+#include<bits/stdc++.h>
 using namespace std;
-int isYoon(int year) {//윤년이면 true, 평년이면 false
-	return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
-}
 
-int currentMonth(string month) {//스트링으로 받은 달을 숫자로 반환
-	if (month == "January") {
-		return 1;
-	}
-	else if (month == "February") {
-		return 2;
-	}
-	else if (month == "March") {
-		return 3;
-	}
-	else if (month == "April") {
-		return 4;
-	}
-	else if (month == "May") {
-		return 5;
-	}
-	else if (month == "June") {
-		return 6;
-	}
-	else if (month == "July") {
-		return 7;
-	}
-	else if (month == "August") {
-		return 8;
-	}
-	else if (month == "September") {
-		return 9;
-	}
-	else if (month == "October") {
-		return 10;
-	}
-	else if (month == "November") {
-		return 11;
-	}
-	else {
-		return 12;
-	}
-}
-int sumDate(int year, int month, int date) {
-	int sum = 0;
-	for (int i = 1; i < month; i++) {
-		switch (i) {
-		case 1: case 3: case 5: case 7: case 8: case 10: case 12:
-			sum += 31;
-			break;
-		case 4: case 6: case 9: case 11:
-			sum += 30;
-			break;
-		case 2:
-			if (isYoon(year)) {
-				sum += 29;
-			}
-			else {
-				sum += 28;
-			}
-			break;
-		}
-	}
+int main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);
+    string month, day; cin >> month >> day;
+    int year; cin >> year;
+    string time; cin >> time;
+    day = day.substr(0,day.size()-1);
+    int int_day = stoi(day);   
+    int hour = stoi(time.substr(0,2));
+    int minute = stoi(time.substr(3,2));
 
-	sum += date - 1;
+    if(month == "January") int_day += 0;
+    else if(month == "February") int_day += 31;
+    else if(month == "March") int_day += 59;
+    else if(month == "April") int_day += 90;
+    else if(month == "May") int_day += 120;
+    else if(month == "June") int_day += 151;
+    else if(month == "July") int_day += 181;
+    else if(month == "August") int_day += 212;
+    else if(month == "September") int_day += 243;
+    else if(month == "October") int_day += 273;
+    else if(month == "November") int_day += 304;
+    else if(month == "December") int_day += 334;
+    
+    int_day--;
 
-	return sum;
-}
-int totalNewYear(int year, string month, string date, string currentTime) {
-	int time = (currentTime.at(0) - '0') * 10;
-	time += (currentTime.at(1) - '0');
-	time *= 60;
-	time += (currentTime.at(3) - '0') * 10;
-	time += (currentTime.at(4) - '0');
+    hour += int_day*24;
+    minute += hour*60;
+    bool yoon = false;
+    if(year%400 == 0 || (year%4 == 0 && year%100 != 0)) yoon = true;
+    int total_minutes;
+    if(yoon) total_minutes = 366*24*60;
+    else total_minutes =365*24*60;
+    if(yoon && month != "January" && month != "February")
+        minute += 60*24;
+    
+    double ans = (double)minute/total_minutes*100;
+    cout << fixed << setprecision(9) << ans;
 
-	int mon = currentMonth(month);
-	int dat = (date.at(0) - '0') * 10 + (date.at(1) - '0');
-	int sum = sumDate(year, mon, dat);
-	time += sum * 60 * 24;
-
-	return time;
-}
-int main() {
-	string month;
-	string date;
-	int year;
-	string currentTime;
-
-	cin >> month >> date >> year >> currentTime;
-	long double currentYear;
-
-	if (isYoon(year)) {
-		currentYear = 366 * 24 * 60L;//윤년이면 366일
-	}
-	else {
-		currentYear = 365 * 24 * 60L;//평년이면 365일
-	}
-
-	long double answer = (totalNewYear(year, month, date, currentTime)*100L);//백분율이기 때문에 100을 곱함
-	answer /= currentYear;//해당 연도의 총 시간으로 나눔
-
-	printf("%.16llf\n", answer);
-
-	return 0;
+    
+    
+    return 0;
 }
