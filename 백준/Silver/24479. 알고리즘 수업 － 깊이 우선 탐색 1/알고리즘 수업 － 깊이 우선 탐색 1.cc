@@ -1,35 +1,47 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#include<queue>
+#include<deque>
+#include<string.h>
+#include<math.h>
+#include<cmath>
+#include<stack>
+#include<algorithm>
+
 using namespace std;
 
-int a,b,c; 
-bool visited[100001];
-set<int> edge[100001];
-int orders[100001];
-int order = 1;
+vector<int> graph[100001];
+int visited[100001] = { 0, };
+int result[100001];
+int cnt = 0;
 
-void dfs(int n){
-    visited[n] = 1;
-    orders[n] = order++;
-    for(auto k : edge[n]){
-        if(!visited[k]) dfs(k);
-    }
+void dfs(int r) {
+	if (visited[r] == 1) { // 방문 한 곳이면 return
+		return;
+	}
+
+	visited[r] = 1; // 방문하지 않았다면 방문했다고 표시
+	cnt++;
+	result[r] = cnt;
+
+	for (int i = 0; i < graph[r].size(); i++) {
+		dfs(graph[r][i]); 
+	}
 }
-
-int main(){
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    cin >> a >> b >> c;
-
-    for(int i=0;i<b;i++){
-        int n1,n2; cin >> n1 >> n2;
-        edge[n1].insert(n2);
-        edge[n2].insert(n1); 
-    }
-
-    dfs(c);
-
-    for(int i=1;i<=a;i++) cout << orders[i] << "\n";
-
-    
-    
-    return 0;
+int main() {
+	int n, m, r;
+	scanf("%d %d %d", &n, &m, &r);
+	for (int i = 1; i <= m; i++) {
+		int a, b;
+		scanf("%d %d", &a, &b);
+		graph[a].push_back(b); // (1,4) (1,2) (2,3) (2,4) (3,4)
+		graph[b].push_back(a); // (4,1) (2,1) (3,2) (4,2) (4,3)	
+	}
+	for (int i = 1; i <= n; i++) {
+		sort(graph[i].begin(), graph[i].end());
+	}
+	dfs(r);
+	for (int i = 1; i <= n; i++) {
+		printf("%d\n", result[i]);
+	}
+	
 }
