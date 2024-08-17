@@ -1,161 +1,38 @@
-// #include<bits/stdc++.h>
-// using namespace std;
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-// struct node {
-//     node* parent;
-//     node* left;
-//     node* right;
-//     int n, w, left_best, right_best;
-
-//     node(int num, int weight) : parent(nullptr), left(nullptr), right(nullptr), w(weight), left_best(0), right_best(0), n(num) {}
-// };
-
-// node* find(node* root, int num) {
-//     if (root == nullptr) return nullptr;
-//     if (num == root->n) return root;
-
-//     node* found = find(root->left, num);
-//     if (found) return found;
-
-//     return find(root->right, num);
-// }
-
-// void insert(node* root, int parent, int child, int weight){
-//     node* temp = find(root, parent);
-//     if(!temp->left){
-//         temp->left = new node(child, weight);
-//         temp->left->parent = temp;
-//     }
-//     else{
-//         temp->right = new node(child, weight);
-//         temp->right->parent = temp;
-//     }
-// }
-
-// void leaf(node* root){
-//     if(root->left) leaf(root->left);
-//     else if(root->right) leaf(root->right);
-//     else{ 
-//         return;
-//     }
-// }
-
-// int main(){
-//     ios_base::sync_with_stdio(0);cin.tie(0);
-//     int n; cin >> n;
-//     int ans = 0;
-//     node* root = new node(1, 0);
-    
-//     for(int i=0;i<n;i++){
-//         int a,b,c; cin >> a >> b >> c;
-//         insert(root, a, b ,c);
-//     }
-//     // left, right 둘 다 null 인 leaf를 찾아서 거기서 root 까지 올라오면서 각 node의 left, right best를 업데이트함.
-//     // 업데이트 할 때마다 left_best + right_best 를 ans와 비교해서 max인 걸로 업데이트.
-
-//     leaf(root);
-    
-//     return 0;
-// }
-
-// 이진트리가 아니어서 폐기.
-
-// #include<bits/stdc++.h>
-// using namespace std;
-
-// vector<pair<int,int>> vec[10001];
-// int dis[10001];
-
-// int main(){
-//     ios_base::sync_with_stdio(0);cin.tie(0);
-//     int n; cin >> n;
-//     int ans = 0;
-//     set<int> leaf; leaf.insert(1);
-//     for(int i=0;i<n-1;i++){
-//         int a,b,c; cin >> a >> b >> c;
-//         if(leaf.find(a) != leaf.end()){
-//             leaf.erase(a);
-//         }
-//         leaf.insert(b);
-//         vec[a].push_back({c,b});
-//         vec[b].push_back({c,a});
-//     }
-//     // for(auto k : leaf) cout << k << " ";
-
-//     for(auto i : leaf){
-//         priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-//         pq.push({0, i});
-//         for(int j=1;j<=n;j++) dis[j] = INT32_MAX;
-//         dis[i] = 0;
-
-//         while(!pq.empty()){
-//             int cur_dis = pq.top().first;
-//             int cur_node = pq.top().second;
-//             pq.pop();
-
-//             if(dis[cur_node] >= cur_dis){
-//                 for(auto next : vec[cur_node]){
-//                     int next_dis = next.first;
-//                     int next_node = next.second;
-//                     if(dis[next_node] > dis[cur_node] + next_dis){
-//                         dis[next_node] = dis[cur_node] + next_dis;
-//                         pq.push({dis[next_node], next_node});
-//                     }
-//                 }
-//             }   
-//         }
-//         int mx = *max_element(dis+1, dis+n+1);
-//         ans = max(ans, mx);
-//     }
-//     cout << ans;
-    
-//     return 0;
-// }
-
-// 다중 다익스트라 시간초과 ㅈㅈ...
-
-#include<bits/stdc++.h>
 using namespace std;
+int n;
+vector<int>V;
+vector<pair<int,int> >node[10001];
+int maxVal=-1, maxnode=0;
+void dfs(int now, int val);
+int main(){
+    cin>>n; //정점의 개수
+    V.resize(n+1,0);
+    int s,e,w;
+    for(int i=0; i<n-1; i++){
+        cin>>s>>e>>w; //출발,도착,가중치
+        node[s].push_back(make_pair(e,w));
+        node[e].push_back(make_pair(s,w));
+    }
+    dfs(1,0); //루트에서 가장 먼 노드를 찾음.
+    V.assign(n+1,0);
+    maxVal=-1;
+    dfs(maxnode,0);
+    cout<<maxVal<<endl;
+}
+void dfs(int now, int val){
 
-vector<pair<int,int>> vec[10001];
-bool visited[10001];
-
-int ans = 0;
-
-void dfs(int n, int sum){
-    ans = max(ans, sum);
-
-    for(auto k : vec[n]){
-        if(!visited[k.second]){
-            visited[k.second] = true;
-            dfs(k.second, sum + k.first);
-            visited[k.second] = false;
-        }
+    V[now]=1; //방문 처리
+    if(maxVal < val){ //최대값이 갱신될 경우
+        maxVal=val;
+        maxnode=now;
+    }
+    for(int i=0; i<node[now].size();i++){ //현재 지점에서 갈 수 있는 노드.
+        if(V[node[now][i].first]==1) //이미 방문한 경우
+            continue;
+        dfs(node[now][i].first,val+node[now][i].second);
     }
 }
-
-int main(){
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    int n; cin >> n;
-
-    set<int> leaf; leaf.insert(1);
-    for(int i=0;i<n-1;i++){
-        int a,b,c; cin >> a >> b >> c;
-        if(leaf.find(a) != leaf.end()){
-            leaf.erase(a);
-        }
-        leaf.insert(b);
-        vec[a].push_back({c,b});
-        vec[b].push_back({c,a});
-    }
-    // for(auto k : leaf) cout << k << " ";
-
-    for(auto i : leaf){
-        fill(visited, visited+10001, 0);
-        visited[i] = 1;
-        dfs(i, 0);
-    }
-    cout << ans;
-    
-    return 0;
-}   
