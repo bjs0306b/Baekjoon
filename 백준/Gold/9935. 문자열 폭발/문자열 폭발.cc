@@ -1,98 +1,34 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<string.h>
 using namespace std;
-
-int main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    string s1, s2;
-    cin >> s1 >> s2;
-
-    long long hash = 0;
-    long long temp = 1;
-    for (int i = 0; i < s2.size(); i++)
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    string a; // 전체 문자열 변수
+    string b; // 폭발 문자열 변수
+    string t = ""; // 임시 문자열 
+    cin >> a >> b;
+    int a_len = a.length(); // 전체 문자열 길이
+    int b_len = b.length(); // 폭발 문자열 길이
+    for (int i = 0; i < a.length(); i++)
     {
-        hash += temp * s2[i];
-        temp *= 2;
-    }
-    // cout << hash <<'\n';
-    if(s1.size() < s2.size()){cout << "FLURA"; return 0;}
-    long long hash2 = 0;
-    vector<char> vec;
-    for (int i = 0; i < s1.size(); i++)
-    {
-        if (vec.size() < s2.size())
-        {
-            hash2 += pow(2, vec.size()) * s1[i];
-            vec.push_back(s1[i]);
+        t += a[i]; // 문자 추가
+        if(t.length()>=b_len){ // 임시 문자 길이가 폭발 문자열 보다 크거나 같을 때
+            bool flag = true; // 폭발 문자열 있는지 확인하는 flag
+            for (int j = 0; j < b_len; j++){ 
+                if(t[t.length()-b_len+j] != b[j]){
+                    flag = false;
+                    break;
+                } // t뒤에서 폭발 문자열 길이만큼 비교
+            }
+ 
+            if(flag) // 폭발 문자열일 경우 삭제 
+                t.erase(t.end() - b_len, t.end());
         }
+    }
+        if (t.empty()) // 남아 있는 문자열이 없는 경우
+            cout << "FRULA" << '\n';
         else
-        {
-            if (hash == hash2)
-            {
-                bool flag = true;
-
-                for (int j = 0; j < s2.size(); j++)
-                {
-                    if (vec[vec.size() - s2.size() + j] != s2[j]){
-                        flag = false;
-                        break;
-                    }
-                }
-                if (flag)
-                {
-                    for (int j = 0; j < s2.size(); j++)
-                        vec.pop_back();
-                    hash2 = 0;
-                    int t = 0;
-                    if (vec.size() < s2.size() - 1)
-                    {
-                        for (int j = 0; j < vec.size(); j++, t++)
-                        {
-                            hash2 += pow(2, t) * vec[j];
-                        }
-                    }
-                    else
-                    {
-                        for (int j = vec.size() - s2.size() + 1; j < vec.size(); j++, t++)
-                        {
-                            hash2 += pow(2, t) * vec[j];
-                        }
-                    }
-                    hash2 += pow(2, t) * s1[i];
-                    vec.push_back(s1[i]);
-                }
-                else
-                {
-                    hash2 -= vec[vec.size() - s2.size()];
-                    hash2 /= 2;
-                    hash2 += pow(2, s2.size() - 1) * s1[i];
-                    vec.push_back(s1[i]);
-                }
-            }
-            else
-            {
-                hash2 -= vec[vec.size() - s2.size()];
-                hash2 /= 2;
-                hash2 += pow(2, s2.size() - 1) * s1[i];
-                vec.push_back(s1[i]);
-            }
-        }
-        // cout << hash2 << "\n";
-    }
-    if (hash == hash2)
-        for (int j = 0; j < s2.size(); j++)
-            vec.pop_back();
-
-    if (vec.size())
-    {
-        for (int i = 0; i < vec.size(); i++)
-        {
-            cout << vec[i];
-        }
-    }
-    else
-        cout << "FRULA";
-
+            cout << t << '\n';
     return 0;
 }
