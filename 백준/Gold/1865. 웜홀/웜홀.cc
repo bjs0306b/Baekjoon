@@ -1,60 +1,65 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-long long dis[501]; // int32_max + 양수 하면 int의 경우 overflow 발생.
-int a, b, c;                              // node, + 간선, - 간선 수
-vector<pair<int, pair<int, int>>> vec; 
-
-bool bford(int start)
+int a, b, c;
+long long dis[501];
+struct node
 {
-    for (int j = 1; j <= a; j++) dis[j] = INT32_MAX;
-    dis[start] = 0;
+    int from, to, cost;
+};
+vector<node> vec;
 
-    for (int k = 1; k <= a; k++)
+bool bf(int start)
+{
+    for (int i = 1; i <= a; i++)
     {
-        for (auto n : vec)
+        for (auto k : vec)
         {
-            int from = n.first;
-            int to = n.second.first;
-            int cost = n.second.second;
+            int from = k.from;
+            int to = k.to;
+            int cost = k.cost;
 
             if (dis[to] > dis[from] + cost)
             {
+                if(i == a) return true;
                 dis[to] = dis[from] + cost;
-                if (k == a) return true;
-            }     
+            }
         }
     }
     return false;
 }
-
 int main()
 {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     int n;
     cin >> n;
-
-    for (int i = 0; i < n; i++)
+    while (n--)
     {
         cin >> a >> b >> c;
         while (b--)
         {
-            int s, e, w;
-            cin >> s >> e >> w;
-            vec.push_back({s, {e, w}});
-            vec.push_back({e,{s,w}});
+            int f, t, c;
+            cin >> f >> t >> c;
+            vec.push_back({f, t, c});
+            vec.push_back({t, f, c});
         }
         while (c--)
         {
-            int s, e, w;
-            cin >> s >> e >> w;
-            w = -1 * w;
-            vec.push_back({s, {e, w}});
+            int f, t, c;
+            cin >> f >> t >> c;
+            c *= -1;
+            vec.push_back({f, t, c});
         }
 
-        if(bford(1)) cout << "YES\n";
-        else cout << "NO\n";
+        for (int i = 1; i <= a; i++)
+            dis[i] = INT32_MAX;
+        dis[1] = 0;
+
+        if (bf(1))
+            cout << "YES\n";
+        else
+            cout << "NO\n";
+
         vec.clear();
     }
 
