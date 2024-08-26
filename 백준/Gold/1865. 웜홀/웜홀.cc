@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-long long dis[501];
+long long dis[501]; // int32_max + 양수 하면 int의 경우 overflow 발생.
 int a, b, c;                              // node, + 간선, - 간선 수
-vector<pair<int, pair<int, int>>> vec; // 0은 갈 때, 1은 올 때
-bool visited[501];
+vector<pair<int, pair<int, int>>> vec; 
 
 bool bford(int start)
 {
@@ -22,7 +21,6 @@ bool bford(int start)
             if (dis[to] > dis[from] + cost)
             {
                 dis[to] = dis[from] + cost;
-                visited[to] = true;
                 if (k == a) return true;
             }     
         }
@@ -40,7 +38,6 @@ int main()
     for (int i = 0; i < n; i++)
     {
         cin >> a >> b >> c;
-        fill(visited, visited+a+1, 0);
         while (b--)
         {
             int s, e, w;
@@ -56,17 +53,7 @@ int main()
             vec.push_back({s, {e, w}});
         }
 
-        bool ans = false;
-        for (int j = 1; j <= a && !visited[j]; j++)
-        {                       
-            bool flag = bford(j); // true면 음수 순환이 있음.
-            if (flag)
-            {
-                ans = true;
-                break;
-            }
-        }
-        if(ans) cout << "YES\n";
+        if(bford(1)) cout << "YES\n";
         else cout << "NO\n";
         vec.clear();
     }
