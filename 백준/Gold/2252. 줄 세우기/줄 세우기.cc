@@ -1,30 +1,43 @@
-#include<bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <queue>
 using namespace std;
-
-vector<int> vec[32001];
-bool visited[32001];
-
-void func(int num){
-    if(!visited[num]){
-        for(auto k : vec[num]){
-            func(k);
+ 
+vector<int> graph[32001];
+int inDegree[32001];
+int N, M;
+ 
+void TopologicalSort(void){
+    queue<int> q;
+    
+    for(int i = 1; i <= N; i++)
+        if(!inDegree[i])
+            q.push(i);
+        
+    while(!q.empty()){
+        int cur = q.front();
+        q.pop();
+        cout << cur << ' ';
+        for(int i = 0; i < graph[cur].size(); i++){
+            inDegree[graph[cur][i]]--;
+            if(!inDegree[graph[cur][i]])
+                q.push(graph[cur][i]);
         }
-        cout << num << " ";
-        visited[num] = 1;
     }
 }
-
-int main(){
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    int n,m; cin >> n >> m;
-    while(m--){
-        int f,t; cin >> f >> t;  // from , to 
-        vec[t].push_back(f);
+ 
+int main(int argc, const char * argv[]) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);cout.tie(NULL);
+    cin >> N >> M;
+    for(int i = 0; i < M; i++){
+        int a, b;
+        cin >> a >> b;
+        graph[a].push_back(b);
+        inDegree[b]++;
     }
-
-    for(int i=1;i<=n;i++){
-        func(i);
-    }
+    
+    TopologicalSort();
     
     return 0;
 }
