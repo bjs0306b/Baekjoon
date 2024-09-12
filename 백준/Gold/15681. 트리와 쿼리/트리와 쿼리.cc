@@ -1,43 +1,48 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#include<vector>
 using namespace std;
-
-vector<int> vec[100001];
-int query[100001];
+ 
+int dp[100001];
 bool visited[100001];
-int dfs(int root){
-
-    // cout << root << "\n";
-    int temp = 1;
-    for(auto k : vec[root]){
-        if(!visited[k]){
-            visited[k] = 1;
-            temp += dfs(k);
-        }
+vector<int> v[100001];
+bool isleaf;
+int N, R, Q;
+ 
+void dfs(int node, int parent)
+{
+    visited[node] = true;
+    for (int i = 0; i < v[node].size(); i++)
+    {
+        int next = v[node][i];
+        if (visited[next])
+            continue;
+        dfs(next, node);
     }
-    query[root] = temp;
-    return temp;
+    if (parent != -1)
+    {
+        dp[parent] += dp[node];
+    }
 }
-
-int main(){
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    int n,r,Q; cin >> n >> r >> Q;
-    
-    for(int i=0;i<n-1;i++){
-        int a,b; cin >> a >> b;
-        vec[a].push_back(b);
-        vec[b].push_back(a);
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+    fill_n(dp, 100001, 1);
+    cin >> N >> R >> Q;
+    int a, b;
+    for (int i = 0; i < N-1; i++)
+    {
+        cin >> a >> b;
+        v[a].push_back(b);
+        v[b].push_back(a);
     }
-
-    visited[r]= 1;
-    int temp = dfs(r);
-
-
-    while(Q--){
-        int node; cin >> node;
-        cout << query[node] << "\n";
+    dfs(R, -1);
+    for (int i = 0; i < Q; i++)
+    {
+        int q;
+        cin >> q;
+        cout << dp[q] << '\n';
     }
-
-    // for(int i=1;i<=n;i++) cout << query[i] << " ";
-    
     return 0;
 }
