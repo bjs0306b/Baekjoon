@@ -1,58 +1,34 @@
-#include <iostream>
+#include<bits/stdc++.h>
 using namespace std;
-int N, M;
+
+// unordered_map<int,int> parent;
 int parent[1000001];
-
-int find(int a)
-{
-	if (parent[a] == a)
-		return a;
-
-	return parent[a]=find(parent[a]);
+int find(int a){
+    if(parent[a] == a) return a;
+  
+    parent[a] = find(parent[a]);
+    return parent[a];
+    
 }
 
-void Union(int a, int b)
-{
-	a = find(parent[a]);
-	b = find(parent[b]);
-
-	if (a != b)
-	{
-		if (a >= b)
-			parent[a] = b;
-		else
-			parent[b] = a;
-	}
+void union_find(int a, int b){
+    int t1 = find(parent[a]), t2 = find(parent[b]);
+    if(t1 > t2) parent[t1] = t2;
+    else parent[t2] = t1;
 }
 
-bool Parent(int a, int b)
-{
-	a = find(a);
-	b = find(b);
-	if (a != b)
-		return false;
-	return true;
-}
-int main(void)
-{
-	cin.tie(0);
-	cout.tie(0);
-	ios_base::sync_with_stdio(false);
+int main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);
+    int n,m; cin >> n >> m;
+    for(int i=0;i<n;i++) parent[i]=i;
+    for(int i=0;i<m;i++){
+        int a,b; cin >> a >> b;
 
-	cin >> N >> M;
-	for (int i = 0; i < N; i++)
-		parent[i] = i;
-
-	int a, b;
-	for (int i = 0; i < M; i++)
-	{
-		cin >> a >> b;	
-		if (Parent(a, b))
-		{
-			cout << i + 1;
-			return 0;
-		}
-		Union(a, b);
-	}
-	cout << "0";
+        if(find(a) == find(b)){
+            cout << i+1; return 0;
+        }
+        union_find(a,b);
+    }
+    cout << "0";
+    return 0;
 }
