@@ -1,53 +1,53 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-unordered_map<long long, long long> um;
+int T, N, M;
+int A[1001], B[1001];
 
-int main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    long long t;
-    cin >> t;
+int main(void){
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 
-    long long n;
-    cin >> n;
-    vector<long long> sumn(n + 1);
-    sumn[0] = 0;
-    for (long long i = 1; i <= n; i++)
-    {
-        cin >> sumn[i];
-        sumn[i] += sumn[i - 1];
-    }
+	cin >> T >> N;
+	for (int i = 0; i < N; i++) 
+        cin >> A[i];
+	cin >> M;
+	for (int i = 0; i < M; i++) 
+        cin >> B[i];
 
-    long long m;
-    cin >> m;
-    vector<long long> summ(m + 1);
-    summ[0] = 0;
-    for (long long i = 1; i <= m; i++)
-    {
-        cin >> summ[i];
-        summ[i] += summ[i - 1];
-    }
+	vector<int> aSum, bSum;
+	
+	for (int i = 0; i < N; i++) {
+		int sum = A[i];
+		aSum.push_back(sum);
+		for (int j = i + 1; j < N; j++) {
+			sum += A[j];
+			aSum.push_back(sum);
+		}
+	}
 
-    for(long long i=1;i<=n;i++){
-        for(long long j=0;j<i;j++){
-            long long num = sumn[i] - sumn[j];
-            um[num]++;
-        }
-    }
+	for (int i = 0; i < M; i++) {
+		int sum = B[i];
+		bSum.push_back(sum);
+		for (int j = i + 1; j < M; j++) {
+			sum += B[j];
+			bSum.push_back(sum);
+		}
+	}
 
-    long long ans = 0;
-    for(long long i=1;i<=m;i++){
-        for(long long j=0;j<i;j++){
-            long long num = summ[i] - summ[j];
-            ans += um[t-num];
-        }
-    }
-    cout << ans;
-    
-    
+	sort(bSum.begin(), bSum.end());
+	long long ans = 0;
+	for (int i = 0; i < aSum.size(); i++) {
+		int target = T - aSum[i];
+        // 타겟과 같은 수들 개수 (hi - lo)
+		int lo = lower_bound(bSum.begin(), bSum.end(), target) - bSum.begin();
+		int hi = upper_bound(bSum.begin(), bSum.end(), target) - bSum.begin();
+		ans += (hi - lo);
+	}
 
+	cout << ans;
 
-    return 0;
+	return 0;
 }
