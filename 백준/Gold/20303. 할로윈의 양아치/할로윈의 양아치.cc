@@ -1,64 +1,107 @@
-#include<bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <unordered_set>
+#include <unordered_map>
+#include <bitset>
+#include <ctime>
+#include <stack>
+#include <queue>
+#include <vector>
+#include <algorithm>
+#include <climits>
+#define FASTIO cin.tie(NULL); cout.tie(NULL); ios::sync_with_stdio(false);
+#define MAX_N 30001
+#define MAX_K 3001
+#define LL long long
+#define INF 1e9
 
-int arr[30001];
-int visited[30001];
-vector<int> vec[30001];
-int dp[30001];
-int cnt;
-int dfs(int n){
-    int temp = arr[n];
-    for(auto k : vec[n]){
-        if(!visited[k]){
-            visited[k] = true;
-            cnt++;
-            temp += dfs(k);
-        }
-    }
-    return temp;
+using namespace std;
+int N, M, K;
+int C[MAX_N];
+int Parent[MAX_N];
+vector<int> Friends[MAX_N];
+int All_Candy[MAX_N];
+int DP[MAX_N][MAX_K];
+int Answer = 0;
+
+void Init() {
+	for (int i = 1; i < MAX_N; i++) {
+		Parent[i] = i;
+	}
 }
 
-int main(){
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    int n,m,k; cin >> n >> m >> k;
-    for(int i=1;i<=n;i++) cin >> arr[i];
-    for(int i=0;i<m;i++){
-        int s,e; cin >> s >> e;
-        vec[s].push_back(e);
-        vec[e].push_back(s);
-    }
+int Find(int X) {
+	if (Parent[X] == X) {
+		return X;
+	}
+	return Parent[X] = Find(Parent[X]);
+}
 
+void Union(int X, int Y) {
+	int PX = Find(X);
+	int PY = Find(Y);
+	if (PX <= PY) {
+		Parent[PY] = PX;
+	}
+	else {
+		Parent[PX] = PY;
+	}
+}
 
-    vector<pair<int,int>> bag; // 사람 수 , 사탕
-    for(int i=1;i<=n;i++){
-        if(!visited[i]){
-            visited[i] = true;
-            int num = dfs(i);
-            int people = cnt+1;
-            cnt=0;
+void Input() {
+	cin >> N >> M >> K;
+	for (int i = 1; i <= N; i++) {
+		cin >> C[i];
+	}
+	for (int i = 0; i < M; i++) {
+		int A, B;
+		cin >> A >> B;
+		Union(A, B);
+	}
+}
 
-            bag.push_back({people, num});
-        }
-    }
+void Settings() {
+	vector<int> Vec;
+	for (int i = 1; i <= N; i++) {
+		int P = Find(i);
+		Friends[P].push_back(i);
+		Vec.push_back(P);
+	}
+	sort(Vec.begin(), Vec.end());
+	Vec.erase(unique(Vec.begin(), Vec.end()), Vec.end());
+	for (int i = 0; i < Vec.size(); i++) {
+		int Rep = Vec[i];
+		for (int j = 0; j < Friends[Rep].size(); j++) {
+			All_Candy[i] += C[Friends[Rep][j]];
+		}
+	}
+	for (int i = 0; i < Vec.size(); i++) {
+		int Cur = Vec[i];
+		int Cnt = Friends[Cur].size();
+		int Candy = All_Candy[i];
+		for (int j = (K - 1); j >= 0; j--) {
+			if (j - Cnt >= 0) {
+				DP[i + 1][j] = max(DP[i][j], DP[i][j - Cnt] + Candy);
+			}
+			else {
+				DP[i + 1][j] = DP[i][j];
+			}
+			Answer = max(Answer, DP[i + 1][j]);
+		}
+	}
+}
 
-    // for(auto k : bag){
-    //     cout << k.first << " " << k.second << "\n";
-    // }
+void Find_Answer() {
+	cout << Answer << "\n";
+}
 
-    for(int i=0;i<bag.size();i++){
-        int people = bag[i].first;
-        int candy = bag[i].second;
+int main() {
+	FASTIO
+	Init();
+	Input();
+	Settings();
+	Find_Answer();
 
-        for(int j=30000 - people; j>=0; j--){
-            dp[j + people] = max(dp[j+people], dp[j] + candy); 
-        }
-    }
-
-    // for(int i=0;i<=n;i++){
-    //     cout << dp[i] << " ";
-    // }
-
-    cout << dp[k-1];
-    
-    return 0;
+	return 0;
 }
