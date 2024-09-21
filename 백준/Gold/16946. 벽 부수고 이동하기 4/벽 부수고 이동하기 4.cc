@@ -1,153 +1,71 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <queue>
+#include <cstdio>//scanf
+#include <cstring>//memset
 using namespace std;
-int m, n;
-int arr[1001][1001];
-int cnt[1001][1001]; // 0인 곳이 몇개가 이어져있는 지 표시하는 cnt
+
+struct Pos {
+	int x, y;
+};
+
+int N, M;
+int Map[1001][1001];
 bool visited[1001][1001];
-bool visited2[1001][1001];
+int dx[] = { -1,1,0,0 };
+int dy[] = { 0,0,-1,1 };
 
-void dfs3(int x, int y, int num)
-{
-
-    if (x > 0 && arr[x - 1][y] == 0)
-    {
-        if (cnt[x - 1][y] == 0)
-        {
-            cnt[x - 1][y] = num;
-            dfs3(x - 1, y, num);
-        }
-    }
-    if (x > 0 && arr[x - 1][y] != 0)
-    {
-        if(!visited2[x-1][y]){
-            visited2[x-1][y] = true;
-            arr[x-1][y] += num;
-        }
-    }
-
-    if (x+1 < m && arr[x + 1][y] == 0)
-    {
-        if (cnt[x + 1][y] == 0)
-        {
-            cnt[x + 1][y] = num;
-            dfs3(x + 1, y, num);
-        }
-      
-    }
-     if (x+1 < m && arr[x + 1][y] != 0)
-    {
-
-        if(!visited2[x+1][y]){
-            visited2[x+1][y] = true;
-            arr[x+1][y] += num;
-        }
-    }
-
-    if (y > 0 && arr[x ][y-1] == 0)
-    {
-        if (cnt[x ][y-1] == 0)
-        {
-            cnt[x ][y-1] = num;
-            dfs3(x , y-1, num);
-        }
-       
-    }
-    if (y > 0 && arr[x ][y-1] != 0)
-    {
-       
-        if(!visited2[x][y-1]){
-            visited2[x][y-1] = true;
-            arr[x][y-1] += num;
-        }
-    }
-
-    if (y +1 < n && arr[x ][y+1] == 0)
-    {
-        if (cnt[x ][y+1] == 0)
-        {
-            cnt[x ][y+1] = num;
-            dfs3(x , y+1, num);
-        }
-   
-    }
-    if (y +1 < n && arr[x ][y+1] != 0)
-    {
-       
-        if(!visited2[x][y+1]){
-            visited2[x][y+1] = true;
-            arr[x][y+1] += num;
-        }
-    }
+void bfs(int startx, int starty) {
+	queue<Pos>q;
+	vector<Pos>wall;
+	q.push({ startx,starty });
+	visited[startx][starty] = true;
+	int cnt = 1;
+	while (!q.empty()) {
+		int x = q.front().x;
+		int y = q.front().y;
+		q.pop();
+		for (int i = 0; i < 4; i++) {
+			int nx = x + dx[i];
+			int ny = y + dy[i];
+			if (nx < 0 || nx >= N || ny < 0 || ny >= M)
+				continue;
+			if (Map[nx][ny] == 0 && visited[nx][ny] == false) {
+				visited[nx][ny] = true;
+				q.push({ nx,ny });
+				cnt++;
+			}
+			//현재 탐색하는 공간에 인접한 벽 저장
+			else if (Map[nx][ny] != 0 && visited[nx][ny] == false) {
+				visited[nx][ny] = true;
+				wall.push_back({ nx,ny });
+			}
+		}
+	}
+	//탐색하면서 나왔던 벽들에 0의 개수 더해주기
+	for (int i = 0; i < wall.size(); i++) {
+		Map[wall[i].x][wall[i].y] += cnt;
+		visited[wall[i].x][wall[i].y] = false;
+	}
 }
 
-int dfs2(int x, int y)
-{
-    int r = 1;
-    if (x > 0 && arr[x - 1][y] == 0 && !visited[x - 1][y])
-    {
-        visited[x - 1][y] = true;
-        r += dfs2(x - 1, y);
-    }
-    if (y > 0 && arr[x][y - 1] == 0 && !visited[x][y - 1])
-    {
-        visited[x][y - 1] = true;
-        r += dfs2(x, y - 1);
-    }
-    if (x + 1 < m && arr[x + 1][y] == 0 && !visited[x + 1][y])
-    {
-        visited[x + 1][y] = true;
-        r += dfs2(x + 1, y);
-    }
-    if (y + 1 < n && arr[x][y + 1] == 0 && !visited[x][y + 1])
-    {
-        visited[x][y + 1] = true;
-        r += dfs2(x, y + 1);
-    }
-
-    return r;
-}
-
-int main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cin >> m >> n;
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            char c;
-            cin >> c;
-            arr[i][j] = c - '0';
-        }
-    }
-
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            if (arr[i][j] == 0 && cnt[i][j] == 0)
-            {
-                visited[i][j] = true;
-                cnt[i][j] = dfs2(i, j);
-
-                for (int k = 0; k < m; k++)
-                    for (int r = 0; r < n; r++)
-                        visited2[k][r] = false;
-                dfs3(i, j, cnt[i][j]);
-            }
-        }
-    }
-
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            cout << arr[i][j] % 10;
-            // << cnt[i][j];
-        }
-        cout << "\n";
-    }
-
-    return 0;
+int main() {
+	scanf("%d %d", &N, &M);
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			scanf("%1d", &Map[i][j]);
+		}
+	}
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (Map[i][j] == 0 && visited[i][j] == false)
+				bfs(i, j);
+		}
+	}
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			printf("%d", Map[i][j]%10);
+		}
+		printf("\n");
+	}
+	return 0;
 }
