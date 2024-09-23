@@ -1,48 +1,61 @@
-#include <bits/stdc++.h>
+#include <iostream> 
+#include <cstring>
+ 
+#define INF 1e9+7
+ 
 using namespace std;
-
-
-
-int main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    string s; cin >> s;
-    int size = s.size();
+ 
+bool dp[2501][2501];
+string str;
+int N, res[2501];
+ 
+bool is_palin(int st, int ed){
+    if(ed > N) return false;
     
-    vector<int> vec[size];
-    int dp[size][2]; for(int i=0;i<size;i++) for(int j=0;j<2;j++) dp[i][j] = INT32_MAX;
-    for(int i=0;i<size;i++){ // odd
-        int temp = 1;
-        for(;;){
-            if(i-temp < 0 || i+temp >= size || s[i-temp] != s[i+temp]) break;
-            vec[i-temp].push_back(2*temp);
-            temp++;
+    if(str[st] == str[ed]){
+        if(dp[st+1][ed-1] || ed-st == 1){
+            return true;
         }
     }
-
-    for(int i=0;i<size-1;i++){ // even
-        int temp = 0;
-        for(;;){
-            if(i-temp < 0 || i+1+temp >= size || s[i-temp] != s[i+1+temp]) break;
-            vec[i-temp].push_back(1+temp*2);
-            temp++;
+    return false;
+}
+ 
+void fill_dptable(){
+    for(int d = 0; d < N; d++){
+        for(int i = 1; i+d <= N; i++){
+            if(d == 0){
+                dp[i][i] = true;
+                continue;
+            }
+            if(is_palin(i, i+d)){
+                dp[i][i+d] = true;
+            }
         }
-    }   
-
-    // for(int i=0;i<size;i++){
-    //     for(auto k : vec[i]) cout << k << " ";
-    //     cout << "\n";
-    // }
-
-    dp[0][0] = 1;
-    for(int i=0;i<size-1;i++){
-        for(auto k : vec[i]){
-            if(i+k < size) dp[i+k][1] = min(dp[i+k][1], dp[i][0]);
-        }
-        dp[i+1][0] = min(min(dp[i][0], dp[i][1])+1, dp[i+1][0]);
     }
-    cout << min(dp[size-1][0],dp[size-1][1]);
-
+}
+ 
+void solve(){
+    fill_dptable();
+    
+    res[0] = 0;
+    for (int i = 1; i <= N; i++) {
+        res[i] = INF;
+        for (int j = 1; j <= i; j++) {
+            if (dp[j][i]) {
+                if (res[i] > res[j-1]+1) {
+                    res[i] = res[j-1]+1;
+                }
+            }
+        }
+    }
+    cout << res[N];
+}
+ 
+int main(){
+    cin >> str;
+    N = str.size();
+    str = " " + str;
+    solve();
+    
     return 0;
 }
