@@ -1,49 +1,53 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#define max(a,b) a > b ? a : b
 using namespace std;
-
-bool arr[19][19]; // [우상향(x+y)] [좌상향(x-y+n-1)]
-bool b1[19]; // 우상향 방문
-bool b2[19]; // 좌상향 방문
-int n;
-int ans = 0;
-void dfs(int row, int cnt){
-    if(row == 2*n-1) ans = max(ans, cnt);
-
-    else{
-        bool flag = true;
-
-        for(int i=0;i<2*n;i++){
-            if(arr[row][i] && !b1[row] && !b2[i]){
-                flag = false;
-                b1[row] = 1;
-                b2[i] = 1;
-
-                dfs(row+1, cnt+1);
-
-                b1[row] = 0;
-                b2[i] = 0;
-            }
-        }
-        if(flag) dfs(row+1, cnt);
-    }
-}
-
-int main()
+ 
+int N;
+int ans[2];
+int chess[11][11];
+int l[20];
+int r[20];
+ 
+// 놓을 수 있는 비숍의 최대개수를 구하는 함수
+// 흑/백, 두 가지 경우로 나누어 계산
+ 
+void tracking(int row, int col, int count, int color)
 {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    
-    cin >> n;
-    for(int i=0;i<n;i++){
-        for(int j=0;j<n;j++){
-            bool b; cin >> b;
-            if(b) arr[i+j][i-j+n-1] = 1;
+    if (col >= N) {
+        row++;
+        if(col%2 == 0) col = 1;
+        else col = 0;
+    }
+    if (row >= N) {
+        ans[color] = max(ans[color], count);
+        return;
+    }
+ 
+    if (chess[row][col] && !l[col - row + N - 1] && !r[row + col])
+    {
+        l[col - row + N - 1] = r[row + col] = 1;
+        tracking(row, col+2, count + 1, color);
+        l[col - row + N - 1] = r[row + col] = 0;
+    }
+    tracking(row, col+2, count, color);
+}
+ 
+int main(void)
+{
+    cin >> N;
+ 
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            cin >> chess[i][j];
         }
     }
-
-    dfs(0,0);
-
-    cout << ans;
-
+ 
+    tracking(0, 0, 0, 0);
+    tracking(0, 1, 0, 1);
+ 
+    cout << ans[0] + ans[1];
+ 
     return 0;
 }
