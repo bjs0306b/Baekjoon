@@ -1,63 +1,50 @@
-#include <bits/stdc++.h>
+#include <iostream>
+
 using namespace std;
+
+int Index[100001];
+int inorder[100001];
+int postorder[100001];
 int n;
-vector<int> in, post;
-unordered_map<int, int> in_m;
-bool visited[100000];
 
-void func(int s, int e)
+// 입력 받기
+void input()
 {
-    if (s == e)
-        cout << post[e] << " ";
-    else if (s < e)
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    cin >> n;
+    for (int i = 1; i <= n; i++)
     {
-        int temp = post[e];
-        int pos = in_m[temp];
-        cout << temp << " ";  //<< s << " " << e << "\n";
-        visited[pos] = 1;
-
-        int a = pos-1;
-        int left = 0;
-        while (a >= 0 && !visited[a])
-        {
-            a--;
-            left++;
-        }
-        int b = pos+1;
-        int right = 0;
-        while (b < n && !visited[b])
-        {
-            b++;
-            right++;
-        }
-        //cout << left << " " << right << "\n";
-
-        func(s, s + left - 1);
-        func(e - right, e - 1);
+        cin >> inorder[i];
+        Index[inorder[i]] = i; // inorder 요소들의 Index 정보 저장
     }
+    for (int i = 1; i <= n; i++)
+        cin >> postorder[i];
+}
+
+// preorder 를 출력하는 함수 (재귀)
+void getPreOrder(int inStart, int inEnd, int postStart, int postEnd)
+{
+    // 더 이상 분할 할 수 없는 경우 return
+    if (inStart > inEnd || postStart > postEnd)
+        return;
+    // postorder의 끝 값이 root값
+    // Index 배열을 통해 inorder에서의 root index를 쉽게 구할 수 있다.
+    int rootIndex = Index[postorder[postEnd]];
+    int leftSize = rootIndex - inStart;
+    int rightSize = inEnd - rootIndex;
+    cout << inorder[rootIndex] << ' '; // root 값 출력
+
+    // 재귀 함수 호출
+    getPreOrder(inStart, rootIndex - 1, postStart, postStart + leftSize - 1);
+    getPreOrder(rootIndex + 1, inEnd, postStart + leftSize, postEnd - 1);
 }
 
 int main()
 {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-
-    cin >> n;
-    for (int i = 0; i < n; i++)
-    {
-        int num;
-        cin >> num;
-        in.push_back(num);
-        in_m[num] = i; // 어떤 수가 어떤 위치에 있는 지 저장.
-    }
-    for (int i = 0; i < n; i++)
-    {
-        int num;
-        cin >> num;
-        post.push_back(num);
-    }
-
-    func(0, n - 1);
-
+    input();
+    getPreOrder(1, n, 1, n);
     return 0;
 }
