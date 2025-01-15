@@ -27,23 +27,15 @@ void dif(int a, int b)
     dif_cnt[a][b] = cnt;
 }
 
-void dfs(int dep, int sum, string s)
-{
-    if(dep == k){
-        int temp = stoi(s);
-        if(s == x) return;
-        if(1 <= temp && temp <= stoi(n)){
-            // cout << s << " " << x << "\n";
-            ans++;
-        }
+void func(string a){
+    int temp = k - a.size();
+    for(int i=0;i<temp;i++) a = '0' + a;
+
+    int sum = 0;
+    for(int i=0;i<a.size();i++){
+        sum += dif_cnt[x[i]-'0'][a[i]-'0'];
     }
-    else{
-        int temp = x[dep] - '0';
-        for(int i=0;i<10;i++){
-            char c = '0'+i;
-            if(sum - dif_cnt[temp][i] >= 0) dfs(dep+1, sum-dif_cnt[temp][i], s+c);
-        }
-    }
+    if(sum <= p) ans++;
 }
 
 int main()
@@ -58,13 +50,12 @@ int main()
             dif(i, j);
 
     cin >> n >> k >> p >> x;
-    int nsize = n.size(), xsize = x.size();  // 따로 저장을 안하고 하니 아래 for문에서 x.size()로 넣어서 하니 반복 중에 x의 크기가 증가해서 이상해짐.
-    for (int i = 0; i < k - nsize; i++)
-        n = '0' + n; 
-    for (int i = 0; i < k - xsize; i++)
-        x = '0' + x;
     
-    dfs(0, p, "");
+    int xsize = x.size();
+    for(int i=0;i<k-xsize;i++) x = '0' + x;
+    for(int i=1;i<=stoi(n);i++){
+        if(stoi(x) != i) func(to_string(i));
+    }
 
     cout << ans;
 
