@@ -13,7 +13,7 @@ int main()
         vec.push_back(front);
 
         long long one = front % 10;
-        for(long long i = one-1;i>=0;i--){
+        for(long long i = 0;i<one;i++){
             q.push(front*10+i);
         }
     }
