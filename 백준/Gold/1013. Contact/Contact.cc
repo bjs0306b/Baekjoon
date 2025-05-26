@@ -5,21 +5,15 @@ string s;
 
 bool dfs(int index)
 {
-    if (index >= s.size())
-        return true;
+    if (index >= s.size()) return true;
 
-    if (s[index] == '0')
-    { // 01
-        if (index + 1 >= s.size())
-            return false;
-        if (s[index + 1] == '1')
-            return dfs(index + 2);
+    if (s[index] == '0'){ // 01
+        if (index + 1 >= s.size()) return false;
+        if (s[index + 1] == '1') return dfs(index + 2);
         return false;
     }
-    else
-    { // 100+1+
-        if (index + 3 >= s.size())
-            return false;
+    else{ // 100+1+
+        if (index + 3 >= s.size()) return false;
 
         int cnt = 0;
 
@@ -35,24 +29,15 @@ bool dfs(int index)
             return false;
 
         cnt = 0;
-
-        int one_count = 0;
-        while (index < (int)s.size() && s[index] == '1')
+        while (s[index] == '1')
         {
-            one_count++;
+            if (index == s.size() - 1) return true;
             index++;
+            cnt++;
         }
-        if (one_count < 1)
-            return false;
 
-        if (one_count > 1)
-        {
-            return dfs(index - 1) || dfs(index);
-        }
-        else
-        {
-            return dfs(index);
-        }
+        if (cnt > 1) return dfs(index - 1) || dfs(index);
+        else return dfs(index);
     }
 }
 
@@ -65,13 +50,8 @@ int main()
     while (n--)
     {
         cin >> s;
-
-        if (dfs(0))
-        {
-            cout << "YES\n";
-        }
-        else
-            cout << "NO\n";
+        if (dfs(0)) cout << "YES\n";
+        else cout << "NO\n";
     }
 
     return 0;
