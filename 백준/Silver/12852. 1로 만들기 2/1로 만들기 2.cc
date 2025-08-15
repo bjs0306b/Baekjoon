@@ -1,55 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-bool visited[1000000];
-string history[1000000];
+int n, dp[1000001];
 
-int main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n; cin >> n;
-    queue<int> q; q.push(n); visited[n] = true;
-    int cnt = 0;
-    while(!q.empty()){
-        int size = q.size();
-        for(int i=0;i<size;i++){
-            int f = q.front(); q.pop();
-            if(f == 1){
-                int temp = n;
-                cout << cnt << "\n" << temp << " ";
-                for(auto k : history[1]){
-                    if(k == '1'){
-                        temp /= 3;
-                    }
-                    else if(k == '2'){
-                        temp /= 2;
-                    }
-                    else{
-                        temp--;
-                    }
-                    cout << temp << " ";
-                }
-                return 0;
-            }
+int main() {
+	cin >> n;
 
-            if(f%3==0 && !visited[f/3]){
-                visited[f/3] = true;
-                history[f/3] = history[f] + '1';
-                q.push(f/3);
-            }
-            if(f%2==0 && !visited[f/2]){
-                visited[f/2] = true;
-                history[f/2] = history[f] + '2';
-                q.push(f/2);
-            }
-            if(f>1 && !visited[f-1]){
-                visited[f-1] = true;
-                history[f-1] = history[f] + '3';
-                q.push(f-1);
-            }
-        }
-        cnt++;
-    } 
-    return 0;
+	for (int i = 1; i <= n; i++) {
+		dp[i] = i;
+	}
+
+	for (int i = 2; i <= n; i++) {
+		if (i % 2 == 0) {
+			dp[i] = min(dp[i], dp[i / 2]);
+		}
+		if (i % 3 == 0) {
+			dp[i] = min(dp[i], dp[i / 3]);
+		}
+		dp[i] = min(dp[i], dp[i - 1])+1;
+	}
+
+	cout << dp[n]-1 << "\n";
+
+
+	while (n != 0) {
+		cout << n << " ";
+		if (dp[n] == dp[n - 1] + 1) {
+			n = n - 1;
+		}
+		else if (n%2 == 0 && dp[n] == dp[n / 2] + 1) {
+			n = n / 2;
+		}
+		else if (n%3 == 0 && dp[n] == dp[n / 3] + 1) {
+			n = n / 3;
+		}
+	}
 }
