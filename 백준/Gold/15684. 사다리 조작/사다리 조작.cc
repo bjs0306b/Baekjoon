@@ -38,7 +38,7 @@ bool check()
     return true;
 }
 
-void dfs(int dep, int m)
+void dfs(int dep, int m, int x)
 {
     if (flag)
         return;
@@ -49,7 +49,7 @@ void dfs(int dep, int m)
     }
     else
     {
-        for (int i = 1; i <= h; i++)
+        for (int i = x; i <= h; i++)
         {
             for (int j = 1; j < n; j++)
             {
@@ -59,7 +59,7 @@ void dfs(int dep, int m)
                         continue;
 
                     A[i][j] = true;
-                    dfs(dep + 1, m);
+                    dfs(dep + 1, m, i);
                     A[i][j] = false;
                 }
             }
@@ -70,7 +70,7 @@ void dfs(int dep, int m)
 int solve()
 {
     for(int i=0;i<4;i++){
-        dfs(0, i);
+        dfs(0, i, 1);
         if(flag) return i;
     }
     if (flag) return 1;
