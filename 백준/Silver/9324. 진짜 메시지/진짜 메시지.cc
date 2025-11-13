@@ -5,10 +5,9 @@ bool test(string s){
     vector<int> A(26, 0);
     int size = s.size();
     for(int i=0;i<size;i++){
-        A[s[i]-'A']++;
-        if(A[s[i]-'A'] % 3 == 0){
-            if(i+1 >= size || s[i+1] != s[i]) return false;
+        if(++A[s[i]-'A'] % 3 == 0){
             i++;
+            if(i >= size || s[i] != s[i-1]) return false;
         }
     }
     return true;
