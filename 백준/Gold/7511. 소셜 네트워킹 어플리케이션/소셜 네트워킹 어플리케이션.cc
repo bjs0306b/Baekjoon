@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int parent[1000001], ranking[1000001];
+int parent[1000001];
 
 int find(int u){
     if(parent[u] == u) return u;
@@ -12,12 +12,8 @@ void merge(int u, int v){
     int a = find(u), b = find(v);
     if(a == b) return;
 
-    if(ranking[a] < ranking[b]) parent[a] = b;
-    else if(ranking[a] > ranking[b]) parent[b] = a;
-    else{
-        parent[a] = b;
-        ranking[b]++;
-    }
+    if(a > b) parent[a] = b;
+    else parent[b] = a;
 }
 
 int main(){
@@ -30,11 +26,8 @@ int main(){
         cout << "Scenario " << s << ":\n";
         int n; cin >> n;
   
-        for(int i=0;i<n;i++){
-            parent[i] = i;
-            ranking[i] = 0;
-        }
-
+        for(int i=0;i<n;i++)parent[i] = i;
+        
         int k; cin >> k;
         for(int i=0;i<k;i++){
             int a,b; cin >> a >> b;
