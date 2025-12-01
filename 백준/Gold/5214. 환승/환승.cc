@@ -6,6 +6,7 @@ int main(){
 
     int n,k,m; cin >> n >> k >> m;
     bool visited[n+1]; for(int i=1;i<=n;i++) visited[i] = false;
+    bool tube_visited[m]; for(int i=0;i<m;i++) tube_visited[i] = false;
     vector<int> v[m], index[n+1];
 
     for(int i=0;i<m;i++){
@@ -32,6 +33,8 @@ int main(){
 
             for(int j=0;j<index[f].size();j++){
                 int tube = index[f][j];
+                if(tube_visited[tube]) continue;
+                tube_visited[tube] = true;
                 for(auto next_node : v[tube]){
                     if(f == next_node) continue;
                     if(!visited[next_node]){
