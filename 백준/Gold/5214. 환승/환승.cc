@@ -4,9 +4,10 @@ using namespace std;
 int main(){
     cin.tie(0)->sync_with_stdio(0);
 
-    int n,k,m;
-    cin >> n >> k >> m;
+    int n,k,m; cin >> n >> k >> m;
+    bool visited[n+1]; for(int i=1;i<=n;i++) visited[i] = false;
     vector<int> v[m], index[n+1];
+
     for(int i=0;i<m;i++){
         for(int j=0;j<k;j++){
             int num; cin >> num;
@@ -14,36 +15,34 @@ int main(){
             index[num].push_back(i);
         }
     }
+    visited[1] = true;
+    queue<int> q; q.push(1);
 
-    vector<int> dis(n+1, INT32_MAX);
-    dis[1] = 1;
-
-    priority_queue<pair<int,int>> pq; // {거리, 노드}
-    pq.push({-1, 1});
-
-    while(!pq.empty()){
-        int cur_node = pq.top().second;
-        int cur_dis = -pq.top().first;
-        pq.pop();
-
-        if(dis[cur_node] < cur_dis) continue;
+    int ans = 1;
+    while(!q.empty()){
         
-        for(int i=0;i<index[cur_node].size();i++){
-            int temp = index[cur_node][i];
+        int size = q.size();
+        for(int i=0;i<size;i++){
+            int f = q.front();
+            q.pop();
+            if(f == n){
+                cout << ans;
+                return 0;
+            }
 
-            for(auto k : v[temp]){
-                if(k == cur_node) continue;
-
-                if(cur_dis + 1 < dis[k]){
-                    dis[k] = cur_dis + 1;
-                    pq.push({-dis[k], k});
+            for(int j=0;j<index[f].size();j++){
+                int tube = index[f][j];
+                for(auto next_node : v[tube]){
+                    if(f == next_node) continue;
+                    if(!visited[next_node]){
+                        visited[next_node] = true;
+                        q.push(next_node);
+                    }
                 }
             }
         }
+        ans++;
     }
-
-    if(dis[n] == INT32_MAX) cout << -1;
-    else cout << dis[n];
-
+    cout << -1;
     return 0;
 }
