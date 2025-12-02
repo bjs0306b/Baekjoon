@@ -6,7 +6,7 @@ long long ans1, ans2;
 long long gcd(long long a, long long b){
     if(b == 0){
         ans1 = 1;
-        ans2 = 1;
+        ans2 = 0;
         return a;
     }
     long long ret = gcd(b, a%b);
