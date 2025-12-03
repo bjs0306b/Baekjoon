@@ -4,25 +4,29 @@ using namespace std;
 int main(){
     cin.tie(0)->sync_with_stdio(0);
 
-    long long n; cin >> n;
-    map<long long,long long> m;
-    while(n--){
-        long long t; cin >> t;
-        m.clear();
-        for(long long i=0;i<t;i++){
-            long long num; cin >> num;
-            m[num]++;
-        }
-
-        bool flag = false;
-        for(auto k : m){
-            if(k.second > t/2){
-                cout << k.first << "\n";
-                flag = true;
-                break;
+    long long t; cin >> t;
+    while(t--){
+        long long n; cin >> n;
+        vector<long long> v(n); for(auto &k : v) cin >> k;
+        long long num = -1, cnt = 0;
+        for(long long i=0;i<n;i++){   
+            if(cnt == 0){
+                num = v[i];
+                cnt++;
             }
+            else if(num != v[i]){
+                cnt--;
+            }
+            else{
+                cnt++;
+            }
+        }   
+        cnt = 0;
+        for(long long i=0;i<n;i++){
+            if(num == v[i]) cnt++;
         }
-        if(!flag) cout << "SYJKGW\n";
+        if(cnt > n/2) cout << num << "\n";
+        else cout << "SYJKGW\n";
     }
 
     return 0;
