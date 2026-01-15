@@ -1,20 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, ans;
-vector<int> v;
+long long n, ans;
+vector<long long> v;
 void input(){
     cin >> n;
-    for(int i=0;i<n;i++){
-        int num; cin >> num;
+    for(long long i=0;i<n;i++){
+        long long num; cin >> num;
         ans += num;
         if(num) v.push_back(i);
     }
 }
 
-int solve(){
+long long solve(){
     if(ans == 0) return n/2;
-    for(int i=0;i<v.size();i++){
+    for(long long i=0;i<v.size();i++){
         if(i == v.size()-1) ans += (n - v[i] + v[0])/2;
         else ans += (v[i+1] - v[i])/2;
     }
