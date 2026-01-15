@@ -1,55 +1,31 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-long long n;
-vector<long long> v;
-bool visited[250000];
-long long dp[250000][2];
+int n, ans;
+vector<int> v;
 void input(){
     cin >> n;
-    v.resize(n);
-    for(long long i=0;i<n;i++){
-        cin >> v[i];  
+    for(int i=0;i<n;i++){
+        int num; cin >> num;
+        ans += num;
+        if(num) v.push_back(i);
     }
 }
 
-void dfs(long long num){
-    visited[num] = true;
-    dp[num][0] = v[num]; 
-    dp[num][1] = 1;
-
-    if(!visited[(num-1+n)%n]){
-
-        visited[(num-1+n)%n] = true;
-
-        dfs((num-1+n)%n);
-
-        dp[num][0] += max(dp[(num-1+n)%n][0], dp[(num-1+n)%n][1]);
-        dp[num][1] += dp[(num-1+n)%n][0]; 
+int solve(){
+    if(ans == 0) return n/2;
+    for(int i=0;i<v.size();i++){
+        if(i == v.size()-1) ans += (n - v[i] + v[0])/2;
+        else ans += (v[i+1] - v[i])/2;
     }
-
-    if(!visited[(num+1)%n]){
-
-        visited[(num+1)%n] = true;
-
-        dfs((num+1)%n);
-
-        dp[num][0] += max(dp[(num+1)%n][0], dp[(num+1)%n][1]);
-        dp[num][1] += dp[(num+1)%n][0]; 
-    }
-}
-
-void solve(){
-    dfs(0);
-
-    cout << max(dp[0][1], dp[0][0]);
+    return ans;
 }
 
 int main(){
     cin.tie(0)->sync_with_stdio(0);
 
     input();
-    solve();
+    cout << solve();
 
     return 0;
 }
