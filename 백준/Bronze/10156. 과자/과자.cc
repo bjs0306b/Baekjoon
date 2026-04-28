@@ -1,0 +1,17 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    long long a, b, c;
+    cin >> a >> b >> c;
+    long long g = a * b - c;
+    if (g < 0)
+        g = 0;
+    cout << g;
+
+    return 0;
+}

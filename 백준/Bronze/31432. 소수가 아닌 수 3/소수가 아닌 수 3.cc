@@ -1,0 +1,19 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);
+    int n; cin >> n;
+
+    int mx = 0;
+    for(int i=0;i<n;i++){
+        int num; cin >> num;
+        mx = max(mx, num);
+    }
+
+    if(mx){
+        cout << "YES\n" << mx << mx  << mx;
+    }
+    else  cout << "YES\n" <<"0";
+    return 0;
+}
