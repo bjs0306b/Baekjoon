@@ -40,7 +40,7 @@ int solution(string begin, string target, vector<string> words) {
             break;
         }
     }
-    if(target_idx == -1) return 0;
+    // if(target_idx == -1) return 0;
     
     int ret = 0;
     queue<int> q; q.push(0);
@@ -50,9 +50,10 @@ int solution(string begin, string target, vector<string> words) {
         int size = q.size();
         for(int i=0;i<size;i++){
             int f = q.front(); q.pop();
-            if(f == target_idx) return ret;
+            
             for(int j=0;j<n+1;j++){
                 if(!visited[j] && has_edge[f][j]){
+                    if(j == target_idx) return ret+1;
                     q.push(j);
                     visited[j] = true;
                 }
